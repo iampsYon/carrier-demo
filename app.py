@@ -520,7 +520,9 @@ elif st.session_state.step == 11:
     
     st.markdown("### Policy Summary")
     
-    col1, col2 = st.columns(2)
+    # FIXED: Defined variables as c1, c2 to match the usage below
+    c1, c2 = st.columns(2)
+    
     with c1:
         st.markdown("**Insured:**")
         st.write(st.session_state.data.get('company'))
@@ -531,7 +533,7 @@ elif st.session_state.step == 11:
         st.write("Workers' Compensation")
         st.write("Limits: $1M / $1M / $1M")
     
-    with col2:
+    with c2:
         st.markdown("**Classification:**")
         st.write(st.session_state.data.get('class_code'))
         
