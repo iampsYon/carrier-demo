@@ -50,11 +50,10 @@ st.markdown("""
     }
     
     /* --- FIX FOR DROPDOWNS (Selectbox) --- */
-    /* 1. The Box itself (when closed) */
     div[data-baseweb="select"] > div {
         background-color: #FFFFFF !important;
         color: #1A1A1A !important;
-        border-color: #E0E0E0 !important;
+        border: 1px solid #E0E0E0 !important;
     }
     div[data-baseweb="select"] span {
         color: #1A1A1A !important;
@@ -62,51 +61,44 @@ st.markdown("""
     div[data-baseweb="select"] svg {
         fill: #1A1A1A !important;
     }
-    
-    /* 2. The Menu List (when open) - This fixes the black background */
     div[data-baseweb="popover"], div[data-baseweb="menu"], ul[data-baseweb="menu"] {
         background-color: #FFFFFF !important;
     }
-    
-    /* 3. The Options inside the list */
     li[role="option"] {
         background-color: #FFFFFF !important;
         color: #1A1A1A !important;
     }
-    
-    /* 4. Hover effect on options (so they don't disappear) */
     li[role="option"]:hover {
         background-color: #F0F2F6 !important;
-        color: #1A1A1A !important;
     }
-    
-    /* 5. The selected option highlight */
     li[role="option"][aria-selected="true"] {
         background-color: #E6FFFA !important;
         color: #1A1A1A !important;
     }
 
     /* --- FIX FOR CHECKBOXES --- */
-    /* Unchecked */
-    [data-testid="stCheckbox"] label span[role="checkbox"] {
+    /* 1. The Box Itself (Unchecked) - Force White with Grey Border */
+    div[data-testid="stCheckbox"] label span[role="checkbox"] {
         background-color: #FFFFFF !important;
-        border-color: #31333F !important;
+        border: 1px solid #BBBBBB !important;
     }
-    /* Checked (Using your Teal color #57CFCF) */
-    [data-testid="stCheckbox"] label span[role="checkbox"][aria-checked="true"] {
+    /* 2. The Box Itself (Checked) - Force Teal */
+    div[data-testid="stCheckbox"] label span[role="checkbox"][aria-checked="true"] {
         background-color: #57CFCF !important;
-        border-color: #57CFCF !important;
+        border: 1px solid #57CFCF !important;
     }
 
     /* --- FIX FOR RADIO BUTTONS --- */
-    /* Unchecked Ring */
-    [data-testid="stRadio"] div[role="radiogroup"] > label > div:first-child {
+    /* 1. The Outer Ring (Unchecked) - Force White with Grey Border */
+    div[data-testid="stRadio"] div[role="radiogroup"] > label > div:first-child {
         background-color: #FFFFFF !important;
-        border-color: #31333F !important;
+        border: 1px solid #BBBBBB !important;
     }
-    /* Checked Circle Background */
-    [data-testid="stRadio"] label[data-baseweb="radio"] > div:first-child {
-         background-color: #FFFFFF !important;
+    
+    /* 2. The Inner Dot (Checked) - Force Teal */
+    /* Streamlit creates a small div inside for the dot when checked */
+    div[data-testid="stRadio"] div[role="radiogroup"] > label > div:first-child > div {
+        background-color: #57CFCF !important;
     }
     
     /* FORCE BUTTON STYLING */
