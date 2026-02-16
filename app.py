@@ -96,7 +96,6 @@ st.markdown("""
     }
     
     /* 2. The Inner Dot (Checked) - Force Teal */
-    /* Streamlit creates a small div inside for the dot when checked */
     div[data-testid="stRadio"] div[role="radiogroup"] > label > div:first-child > div {
         background-color: #57CFCF !important;
     }
@@ -611,7 +610,9 @@ elif st.session_state.step == 11:
         
         st.markdown("**Coverage:**")
         st.write("Workers' Compensation")
-        st.write("Limits: $1M / $1M / $1M")
+        
+        # --- FIX: ESCAPE DOLLAR SIGNS FOR TEXT DISPLAY ---
+        st.write("Limits: \$1M / \$1M / \$1M")
     
     with summary_col2:
         st.markdown("**Classification:**")
