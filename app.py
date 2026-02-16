@@ -42,17 +42,53 @@ st.markdown("""
         font-weight: 700 !important;
     }
     
-    /* Input Fields (Text Input, Select Box, etc) - Force Light Background */
-    .stTextInput input, .stSelectbox div[data-baseweb="select"], .stTextArea textarea, .stNumberInput input {
+    /* Input Fields (Text Input, TextArea, NumberInput) - Force Light Background */
+    .stTextInput input, .stTextArea textarea, .stNumberInput input {
         background-color: #FFFFFF !important;
         color: #1A1A1A !important;
         border: 1px solid #E0E0E0 !important;
     }
     
-    /* Dropdown Menu Items */
-    ul[data-testid="stSelectboxVirtualDropdown"] li {
+    /* --- FIX FOR DROPDOWNS (Selectbox) --- */
+    div[data-baseweb="select"] > div {
         background-color: #FFFFFF !important;
         color: #1A1A1A !important;
+        border-color: #E0E0E0 !important;
+    }
+    div[data-baseweb="select"] span {
+        color: #1A1A1A !important;
+    }
+    div[data-baseweb="select"] svg {
+        fill: #1A1A1A !important;
+    }
+    ul[data-baseweb="menu"] {
+        background-color: #FFFFFF !important;
+    }
+    li[data-baseweb="option"] {
+        color: #1A1A1A !important;
+    }
+
+    /* --- FIX FOR CHECKBOXES --- */
+    /* Unchecked */
+    [data-testid="stCheckbox"] label span[role="checkbox"] {
+        background-color: #FFFFFF !important;
+        border-color: #31333F !important;
+    }
+    /* Checked (Using your Teal color #57CFCF) */
+    [data-testid="stCheckbox"] label span[role="checkbox"][aria-checked="true"] {
+        background-color: #57CFCF !important;
+        border-color: #57CFCF !important;
+    }
+
+    /* --- FIX FOR RADIO BUTTONS --- */
+    /* Unchecked Ring */
+    [data-testid="stRadio"] div[role="radiogroup"] > label > div:first-child {
+        background-color: #FFFFFF !important;
+        border-color: #31333F !important;
+    }
+    /* Checked Circle Background */
+    [data-testid="stRadio"] label[data-baseweb="radio"] > div:first-child {
+         background-color: #FFFFFF !important;
     }
     
     /* FORCE BUTTON STYLING */
