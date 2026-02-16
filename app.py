@@ -10,15 +10,49 @@ st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&family=Inter:wght@300;400;600&display=swap');
     
-    html, body, [class*="css"] {
-        font-family: 'Inter', sans-serif;
-        color: #1A1A1A;
+    /* FORCE LIGHT MODE OVERRIDES */
+    /* This forces the app to look "Light" even if your Mac is in "Dark Mode" */
+    
+    /* Main Background */
+    [data-testid="stAppViewContainer"] {
+        background-color: #FFFFFF !important;
     }
     
+    /* Sidebar Background */
+    [data-testid="stSidebar"] {
+        background-color: #F8F9FA !important;
+        border-right: 1px solid #EAEAEA !important;
+    }
+    
+    /* Header (Top Bar) Background */
+    [data-testid="stHeader"] {
+        background-color: rgba(255, 255, 255, 0) !important;
+    }
+    
+    /* All Text Colors */
+    h1, h2, h3, h4, h5, h6, p, li, span, div, label {
+        color: #1A1A1A !important;
+        font-family: 'Inter', sans-serif;
+    }
+    
+    /* Specific Header Font */
     h1, h2, h3 {
-        font-family: 'Merriweather', serif;
-        color: #002b36;
-        font-weight: 700;
+        font-family: 'Merriweather', serif !important;
+        color: #002b36 !important;
+        font-weight: 700 !important;
+    }
+    
+    /* Input Fields (Text Input, Select Box, etc) - Force Light Background */
+    .stTextInput input, .stSelectbox div[data-baseweb="select"], .stTextArea textarea, .stNumberInput input {
+        background-color: #FFFFFF !important;
+        color: #1A1A1A !important;
+        border: 1px solid #E0E0E0 !important;
+    }
+    
+    /* Dropdown Menu Items */
+    ul[data-testid="stSelectboxVirtualDropdown"] li {
+        background-color: #FFFFFF !important;
+        color: #1A1A1A !important;
     }
     
     /* FORCE BUTTON STYLING */
@@ -39,19 +73,14 @@ st.markdown("""
     div.stButton > button:active {
         background-color: #3AA8A8 !important;
     }
+    
+    /* Secondary/Ghost Buttons (Previous Step) */
+    div.stButton > button[kind="secondary"] {
+        background-color: transparent !important;
+        color: #57CFCF !important;
+        border: 1px solid #57CFCF !important;
+    }
 
-    /* Input Field Styling */
-    .stTextInput > div > div > input {
-        border-radius: 4px;
-        border: 1px solid #E0E0E0;
-    }
-    
-    /* Sidebar Styling */
-    section[data-testid="stSidebar"] {
-        background-color: #F8F9FA;
-        border-right: 1px solid #EAEAEA;
-    }
-    
     /* Success/Referral/Decline Box Styling */
     .bind-box {padding:20px; background-color:#e6fffa; border-left: 5px solid #00A6A6; color:#004d40; border-radius: 4px; margin-bottom: 20px;}
     .refer-box {padding:20px; background-color:#fffbea; border-left: 5px solid #d97706; color:#78350f; border-radius: 4px; margin-bottom: 20px;}
@@ -98,7 +127,6 @@ with st.sidebar:
     st.markdown("---")
     
     # Navigation Visual
-    # SPLIT STEPS: Class Ops (5), Industry Ops (6)
     steps = {
         1: "Start", 
         2: "Account", 
@@ -209,33 +237,39 @@ elif st.session_state.step == 2:
         else:
             next_step()
 
-# --- PAGE 3: GUIDELINES ---
+# --- PAGE 3: GUIDELINES (UPDATED) ---
 elif st.session_state.step == 3:
     if st.button("← Previous step"):
         prev_step()
         
-    st.markdown("# Guidelines")
-    st.write("I have read and confirm that the business I am representing adheres to the following guidelines:")
+    st.markdown("## California Workers' Compensation Eligibility Attestation")
+    st.write("Please review the following eligibility criteria. By proceeding, you attest that the applicant does not engage in any of the prohibited operations or meet the ineligible criteria listed below.")
     
-    st.markdown("### Prohibited Classes/Operations:")
+    st.markdown("### Prohibited Operations & Risk Exposures")
+    st.write("By checking the box below, you certify that the applicant:")
+    
     st.markdown("""
-    * Staffing companies, day labor, and temp agencies
-    * Occupational disease exposures
-    * Blasting
-    * Aviation & Mining
-    * Logging & Tree Trimming (above ground)
-    * High hazard manufacturing
-    * Roofing contractors (over 2 stories)
+    * **Labor & Staffing:** Does not utilize interchange of labor between separate legal entities and is not involved in staffing, PEO, or labor-hire operations.
+    * **High-Risk Specialized Services:** Is not involved in Emergency Services (Ambulance, Fire, Police, Private EMS), Logging, Tree Trimming, Deforestation, or Disaster Cleanup.
+    * **Industrial & Heavy Ops:** Has no involvement in Crane Operations (unless 100% subcontracted), Railroad, Coal, Foundry, Mining, or the manufacturing of Oil, Gas, Asbestos, or Chemicals.
+    * **Hazardous Materials:** Does not handle firearms, ammunition, fireworks, or explosive materials.
+    * **Aviation & Maritime:** Has no aircraft/piloting exposure and does not require Maritime Liability (Jones Act, USL&H, DBA, or FELA).
+    * **Transportation & Travel:** Does not provide group transportation (4+ employees in a single vehicle) and has no international travel or foreign coverage requirements.
+    * **Special Classes:** Does not request coverage for volunteers.
+    * **Height Exposure:** Does not perform any work at heights exceeding 40 feet.
     """)
     
-    agree = st.checkbox("I attest that the business meets the above guidelines and is accurate to my knowledge.")
+    st.markdown("**Fraud Warning:** TBD")
+    st.markdown("**Confirmation**")
+    
+    agree = st.checkbox("I attest that I have reviewed the applicant’s operations and confirm they do not engage in any of the ineligible activities listed above.")
     
     st.write("")
     if st.button("Next"):
         if agree:
             next_step()
         else:
-            st.error("Please attest to the guidelines.")
+            st.error("You must attest to the eligibility criteria to proceed.")
 
 # --- PAGE 4: ELIGIBILITY ---
 elif st.session_state.step == 4:
@@ -520,10 +554,10 @@ elif st.session_state.step == 11:
     
     st.markdown("### Policy Summary")
     
-    # FIXED: Defined variables as c1, c2 to match the usage below
-    c1, c2 = st.columns(2)
+    # Define summary columns with unique names
+    summary_col1, summary_col2 = st.columns(2)
     
-    with c1:
+    with summary_col1:
         st.markdown("**Insured:**")
         st.write(st.session_state.data.get('company'))
         st.write("775 Battery Avenue Southeast")
@@ -533,7 +567,7 @@ elif st.session_state.step == 11:
         st.write("Workers' Compensation")
         st.write("Limits: $1M / $1M / $1M")
     
-    with c2:
+    with summary_col2:
         st.markdown("**Classification:**")
         st.write(st.session_state.data.get('class_code'))
         
