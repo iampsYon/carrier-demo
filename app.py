@@ -50,6 +50,7 @@ st.markdown("""
     }
     
     /* --- FIX FOR DROPDOWNS (Selectbox) --- */
+    /* 1. The Box itself (when closed) */
     div[data-baseweb="select"] > div {
         background-color: #FFFFFF !important;
         color: #1A1A1A !important;
@@ -61,10 +62,27 @@ st.markdown("""
     div[data-baseweb="select"] svg {
         fill: #1A1A1A !important;
     }
-    ul[data-baseweb="menu"] {
+    
+    /* 2. The Menu List (when open) - This fixes the black background */
+    div[data-baseweb="popover"], div[data-baseweb="menu"], ul[data-baseweb="menu"] {
         background-color: #FFFFFF !important;
     }
-    li[data-baseweb="option"] {
+    
+    /* 3. The Options inside the list */
+    li[role="option"] {
+        background-color: #FFFFFF !important;
+        color: #1A1A1A !important;
+    }
+    
+    /* 4. Hover effect on options (so they don't disappear) */
+    li[role="option"]:hover {
+        background-color: #F0F2F6 !important;
+        color: #1A1A1A !important;
+    }
+    
+    /* 5. The selected option highlight */
+    li[role="option"][aria-selected="true"] {
+        background-color: #E6FFFA !important;
         color: #1A1A1A !important;
     }
 
