@@ -664,7 +664,7 @@ elif st.session_state.step == 12:
         with c1:
             st.error("⛔ **Validation Alert:** Digital footprint analysis (Yelp/Google) indicates 'Delivery Services' are advertised, but 'No Delivery' was selected.")
         with c2:
-            st.metric(label="Indicative Premium", value="$3,450.00")
+            st.metric(label="Indicative Premium", value="$4,450")
             
         st.button("Start a new Quote", on_click=reset)
         
@@ -682,7 +682,7 @@ elif st.session_state.step == 12:
             st.success("✔ OSHA History: Clean")
             st.success("✔ Digital Footprint: Consistent")
         with c2:
-            st.metric(label="Total Premium", value="$1,250.00")
+            st.metric(label="Total Premium", value="$3,145")
         
         if st.button("BIND POLICY NOW"):
             next_step()
@@ -721,7 +721,7 @@ elif st.session_state.step == 13:
         st.write(st.session_state.data.get('class_code'))
         
         st.markdown("**Total Premium:**")
-        st.metric("Annual Premium", "$1,250.00")
+        st.metric("Annual Premium", "$3,145")
     
     st.markdown("---")
     
