@@ -515,7 +515,8 @@ elif st.session_state.step == 8:
     
     st.write("")
     st.write("")
-    if st.button("Get Quote"):
+    # CHANGED: Button text from "Get Quote" to "Next"
+    if st.button("Next"):
         next_step()
 
 # --- PAGE 9: PAYROLL & OWNERS ---
@@ -547,54 +548,81 @@ elif st.session_state.step == 9:
     st.radio("Coverage Status", ["Include", "Exclude"], horizontal=True)
 
     st.write("")
-    if st.button("Next"):
+    # CHANGED: Button text from "Next" to "Get Quote"
+    if st.button("Get Quote"):
         next_step()
 
-# --- PAGE 10: PROCESSING SCREEN (UPDATED) ---
+# --- PAGE 10: PROCESSING SCREEN (CENTERED CARD) ---
 elif st.session_state.step == 10:
-    st.markdown("# Underwriting Validation")
-    st.markdown("---")
     
     if 'validation_started' not in st.session_state:
         st.session_state.validation_started = True
         st.rerun() 
 
-    # Create placeholders for the list that will "build"
-    step1 = st.empty()
-    step2 = st.empty()
-    step3 = st.empty()
-    step4 = st.empty()
-    step5 = st.empty()
+    # Layout: 3 Columns to center the content (1-2-1 ratio)
+    c1, c2, c3 = st.columns([1, 2, 1])
     
-    # --- ANIMATION SEQUENCE ---
-    # Step 1
-    step1.markdown("**⏳ Connecting to Secretary of State API...**")
-    time.sleep(1.0)
-    step1.markdown("✅ **Corporate Status:** Active (CA SOS)")
-    
-    # Step 2
-    step2.markdown("**⏳ Verifying Business Licenses...**")
-    time.sleep(1.2)
-    step2.markdown("✅ **Business License:** Verified (City of Sacramento)")
-    
-    # Step 3
-    step3.markdown("**⏳ Checking OSHA records...**")
-    time.sleep(0.8)
-    step3.markdown("✅ **OSHA History:** Clean (0 Violations)")
-    
-    # Step 4 (The "AI" part - slightly longer pause)
-    step4.markdown("**⏳ Analyzing Digital Footprint (Carpe Data)...**")
-    time.sleep(1.5) 
-    step4.markdown("✅ **Digital Presence:** Consistent (4.5 Stars)")
-    
-    # Step 5
-    step5.markdown("**⏳ Finalizing Pricing...**")
-    time.sleep(0.8)
-    step5.markdown("✅ **Pricing Model:** Applied")
-    
-    time.sleep(0.5)
-    st.success("Validation Complete! Generating Quote...")
-    time.sleep(1.0)
+    with c2:
+        st.markdown("## 🛡️ Analyzing Risk Profile...")
+        st.markdown(f"**Applicant:** {st.session_state.data.get('company')}")
+        st.markdown("---")
+        
+        # Progress bar at the top of the card
+        progress_bar = st.progress(0)
+        
+        # Area for checklist items to appear
+        status_area = st.empty()
+        
+        # ANIMATION LOGIC
+        # 1. API Connection
+        status_area.markdown("⏳ **Connecting to State Databases...**")
+        time.sleep(0.8)
+        progress_bar.progress(15)
+        
+        # 2. Licenses
+        status_area.markdown("""
+        ✅ **State Databases:** Connected  
+        ⏳ **Verifying Business Licenses...**
+        """)
+        time.sleep(1.2)
+        progress_bar.progress(35)
+        
+        # 3. OSHA
+        status_area.markdown("""
+        ✅ **State Databases:** Connected  
+        ✅ **Business License:** Verified (Active)  
+        ⏳ **Checking OSHA History...**
+        """)
+        time.sleep(0.8)
+        progress_bar.progress(60)
+        
+        # 4. Digital Footprint (Longer pause for "AI")
+        status_area.markdown("""
+        ✅ **State Databases:** Connected  
+        ✅ **Business License:** Verified (Active)  
+        ✅ **OSHA History:** Clean (0 Violations)  
+        ⏳ **Analyzing Digital Footprint (Carpe Data)...**
+        """)
+        time.sleep(1.5)
+        progress_bar.progress(90)
+        
+        # 5. Finalize
+        status_area.markdown("""
+        ✅ **State Databases:** Connected  
+        ✅ **Business License:** Verified (Active)  
+        ✅ **OSHA History:** Clean (0 Violations)  
+        ✅ **Digital Footprint:** Consistent  
+        ⏳ **Finalizing Pricing...**
+        """)
+        time.sleep(0.8)
+        progress_bar.progress(100)
+        
+        # Success Message
+        status_area.markdown("""
+        ### ✅ VALIDATION COMPLETE
+        **Redirecting to Quote...**
+        """)
+        time.sleep(1.2)
         
     del st.session_state.validation_started
     st.session_state.step = 11
