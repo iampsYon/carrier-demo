@@ -179,9 +179,9 @@ with st.sidebar:
         4: "Eligibility", 
         5: "Operations",
         6: "Industry",
-        7: "Basic info", # Moved Up
-        8: "Details",    # Moved Up
-        9: "Payroll & Owners", # Moved Down
+        7: "Basic info", 
+        8: "Details", 
+        9: "Payroll & Owners", 
         10: "Quote", 
         11: "Quote", 
         12: "Bound", 
@@ -464,7 +464,7 @@ elif st.session_state.step == 6:
         else:
             next_step()
 
-# --- PAGE 7: BASIC INFO PART A (Moved Up) ---
+# --- PAGE 7: BASIC INFO PART A ---
 elif st.session_state.step == 7:
     if st.button("← Previous step"):
         prev_step()
@@ -481,7 +481,7 @@ elif st.session_state.step == 7:
     if st.button("Next"):
         next_step()
 
-# --- PAGE 8: BASIC INFO PART B (Moved Up) ---
+# --- PAGE 8: BASIC INFO PART B ---
 elif st.session_state.step == 8:
     if st.button("← Previous step"):
         prev_step()
@@ -518,7 +518,7 @@ elif st.session_state.step == 8:
     if st.button("Get Quote"):
         next_step()
 
-# --- PAGE 9: PAYROLL & OWNERS (Moved Down) ---
+# --- PAGE 9: PAYROLL & OWNERS ---
 elif st.session_state.step == 9:
     if st.button("← Previous step"):
         prev_step()
@@ -550,31 +550,51 @@ elif st.session_state.step == 9:
     if st.button("Next"):
         next_step()
 
-# --- PAGE 10: PROCESSING SCREEN ---
+# --- PAGE 10: PROCESSING SCREEN (UPDATED) ---
 elif st.session_state.step == 10:
+    st.markdown("# Underwriting Validation")
+    st.markdown("---")
     
     if 'validation_started' not in st.session_state:
-        st.markdown("# Validating Data...")
         st.session_state.validation_started = True
         st.rerun() 
 
-    st.markdown("# Validating Data...")
+    # Create placeholders for the list that will "build"
+    step1 = st.empty()
+    step2 = st.empty()
+    step3 = st.empty()
+    step4 = st.empty()
+    step5 = st.empty()
     
-    my_bar = st.progress(0)
-    status_text = st.empty()
+    # --- ANIMATION SEQUENCE ---
+    # Step 1
+    step1.markdown("**⏳ Connecting to Secretary of State API...**")
+    time.sleep(1.0)
+    step1.markdown("✅ **Corporate Status:** Active (CA SOS)")
     
-    steps = [
-        "Connecting to Secretary of State API...",
-        "Verifying Business Licenses...",
-        "Checking OSHA records...",
-        "Analyzing Digital Footprint (Carpe Data)...",
-        "Finalizing Pricing..."
-    ]
+    # Step 2
+    step2.markdown("**⏳ Verifying Business Licenses...**")
+    time.sleep(1.2)
+    step2.markdown("✅ **Business License:** Verified (City of Sacramento)")
     
-    for i, step_text in enumerate(steps):
-        status_text.text(step_text)
-        time.sleep(0.5) 
-        my_bar.progress((i + 1) * 20)
+    # Step 3
+    step3.markdown("**⏳ Checking OSHA records...**")
+    time.sleep(0.8)
+    step3.markdown("✅ **OSHA History:** Clean (0 Violations)")
+    
+    # Step 4 (The "AI" part - slightly longer pause)
+    step4.markdown("**⏳ Analyzing Digital Footprint (Carpe Data)...**")
+    time.sleep(1.5) 
+    step4.markdown("✅ **Digital Presence:** Consistent (4.5 Stars)")
+    
+    # Step 5
+    step5.markdown("**⏳ Finalizing Pricing...**")
+    time.sleep(0.8)
+    step5.markdown("✅ **Pricing Model:** Applied")
+    
+    time.sleep(0.5)
+    st.success("Validation Complete! Generating Quote...")
+    time.sleep(1.0)
         
     del st.session_state.validation_started
     st.session_state.step = 11
