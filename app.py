@@ -140,7 +140,7 @@ if 'step' not in st.session_state:
 if 'data' not in st.session_state:
     st.session_state.data = {
         'company': 'EP Business Company',
-        'address': '775 Battery Avenue Southeast, Sacramento, CA', # Updated default for summary consistency
+        'address': '775 Battery Avenue Southeast, Sacramento, CA', 
         'class_code': 'Landscape Gardening - 0042',
         'premium': '$1,250.00'
     }
@@ -179,9 +179,9 @@ with st.sidebar:
         4: "Eligibility", 
         5: "Operations",
         6: "Industry",
-        7: "Payroll & Owners", 
-        8: "Basic info", 
-        9: "Details", 
+        7: "Basic info", # Moved Up
+        8: "Details",    # Moved Up
+        9: "Payroll & Owners", # Moved Down
         10: "Quote", 
         11: "Quote", 
         12: "Bound", 
@@ -225,11 +225,10 @@ if st.session_state.step == 1:
     if st.button("Start New Quote"):
         next_step()
 
-# --- PAGE 2: ACCOUNT (Updated Defaults) ---
+# --- PAGE 2: ACCOUNT ---
 elif st.session_state.step == 2:
     st.markdown("# New insured account")
     
-    # Changed Default
     company = st.text_input("Company name", "EP Business Company")
     st.session_state.data['company'] = company
     
@@ -239,20 +238,15 @@ elif st.session_state.step == 2:
     
     c1, c2, c3 = st.columns([3, 1, 1])
     with c1: 
-        # Changed Default
         st.text_input("City", "Sacramento", label_visibility="collapsed")
     with c2: 
-        # Changed Default
         st.selectbox("State", ["CA", "GA", "TX"], label_visibility="collapsed")
     
-    # Changed Default
     zip_input = c3.text_input("Zip", "95814", label_visibility="collapsed")
     
-    # Changed Default: Blank but required
     ops_desc = st.text_area("Detailed description of operations", "", placeholder="Enter detailed description...")
     
     st.markdown("### Description of business")
-    # Changed: Landscape added, Masonry removed, Index=None (Blank default)
     class_code = st.selectbox(
         "Choose one",
         [
@@ -271,12 +265,10 @@ elif st.session_state.step == 2:
     
     st.write("")
     if st.button("Next"):
-        # VALIDATION: Check if description is empty
+        # VALIDATION
         if not ops_desc.strip():
             st.error("Please enter a detailed description of operations.")
             st.stop()
-            
-        # VALIDATION: Check if class code is selected
         if not class_code:
             st.error("Please select a business description.")
             st.stop()
@@ -286,14 +278,11 @@ elif st.session_state.step == 2:
         try:
             zip_val = int(zip_input)
             if 90000 <= zip_val <= 91099:
-                # Modified logic for demo: Let 95814 pass, but keep LA logic if needed. 
-                # 95814 is Sacramento, so it should pass.
                 pass 
-                # zip_kickout = True (original logic was LA county kickout)
         except:
             pass 
 
-        # 2. Class Code Check (IMMEDIATE KICKOUT FOR ROOFING ONLY)
+        # 2. Class Code Check
         class_kickout = class_code and "Roofing" in class_code
 
         if zip_kickout:
@@ -361,7 +350,6 @@ elif st.session_state.step == 4:
     st.write("")
     st.write("")
     if st.button("Next"):
-        # KICKOUT LOGIC
         if q_24hr == "Yes":
             st.session_state.decline_reason = "24-hour operations are outside of program appetite."
             st.session_state.step = 13
@@ -381,10 +369,9 @@ elif st.session_state.step == 5:
     code = st.session_state.data.get('class_code', '')
     
     # DETERMINE FLAGS
-    is_landscape = "0042" in code # Changed from Masonry to Landscape
+    is_landscape = "0042" in code
     is_tech = "5193" in code
     
-    # If no specific class questions, skip to next step
     if not is_landscape and not is_tech:
         next_step()
     
@@ -420,7 +407,6 @@ elif st.session_state.step == 6:
     code = st.session_state.data.get('class_code', '')
     
     # DETERMINE INDUSTRY GROUPS
-    # Contractor = Landscape, Plumbing, Tech, Roofing
     is_contractor = "0042" in code or "5183" in code or "5193" in code or "5551" in code
     is_auto = "8380" in code
     
@@ -440,7 +426,7 @@ elif st.session_state.step == 6:
         st.write("")
         c_q4 = st.radio("Does any work take place at depths exceeding 15 feet?", ["No", "Yes"])
         st.write("")
-        c_q5 = st.radio("Are employees required to use fall protection at heights above 10 feet?", ["Yes", "No"]) # Yes is good
+        c_q5 = st.radio("Are employees required to use fall protection at heights above 10 feet?", ["Yes", "No"])
         st.write("")
         c_q6 = st.radio("Does the applicant perform trenching deeper than 8 feet?", ["No", "Yes"])
         st.write("")
@@ -450,7 +436,6 @@ elif st.session_state.step == 6:
         st.write("")
         c_q9 = st.radio("Installation/repair of solar panels on elevated surfaces?", ["No", "Yes"])
 
-        # Kickout Logic
         if c_q1 == "Yes": reason = "Rooftop work is prohibited."
         elif c_q3 == "Yes": reason = "Work at heights > 40ft is prohibited."
         elif c_q4 == "Yes": reason = "Work at depths > 15ft is prohibited."
@@ -460,7 +445,6 @@ elif st.session_state.step == 6:
         elif c_q8 == "Yes": reason = "Demolition/Wrecking operations are prohibited."
         elif c_q9 == "Yes": reason = "Solar panel installation on rooftops is prohibited."
 
-    # --- AUTOMOTIVE GROUP ---
     elif is_auto:
         st.markdown("# Industry Supplement: Automotive")
         st.write("---")
@@ -480,40 +464,8 @@ elif st.session_state.step == 6:
         else:
             next_step()
 
-# --- PAGE 7: PAYROLL & OWNERS ---
+# --- PAGE 7: BASIC INFO PART A (Moved Up) ---
 elif st.session_state.step == 7:
-    if st.button("← Previous step"):
-        prev_step()
-
-    st.markdown("# Payroll & Ownership")
-    
-    # PAYROLL SECTION
-    st.markdown("### Estimated Annual Payroll")
-    code = st.session_state.data.get('class_code', 'Selected Class')
-    st.text_input(f"Annual Payroll for {code}", value="$150,000")
-
-    st.markdown("---")
-
-    # OWNER/OFFICER SECTION
-    st.markdown("### Owner / Officer Information")
-    st.write("Please list all owners/officers and indicate coverage status.")
-    
-    col_a, col_b, col_c = st.columns([2, 2, 1])
-    with col_a:
-        st.text_input("Owner Name", "Jane Doe")
-    with col_b:
-        st.text_input("Title", "President")
-    with col_c:
-        st.number_input("Ownership %", 50, 100, 100)
-    
-    st.radio("Coverage Status", ["Include", "Exclude"], horizontal=True)
-
-    st.write("")
-    if st.button("Next"):
-        next_step()
-
-# --- PAGE 8: BASIC INFO PART A ---
-elif st.session_state.step == 8:
     if st.button("← Previous step"):
         prev_step()
 
@@ -529,8 +481,8 @@ elif st.session_state.step == 8:
     if st.button("Next"):
         next_step()
 
-# --- PAGE 9: BASIC INFO PART B ---
-elif st.session_state.step == 9:
+# --- PAGE 8: BASIC INFO PART B (Moved Up) ---
+elif st.session_state.step == 8:
     if st.button("← Previous step"):
         prev_step()
 
@@ -564,6 +516,38 @@ elif st.session_state.step == 9:
     st.write("")
     st.write("")
     if st.button("Get Quote"):
+        next_step()
+
+# --- PAGE 9: PAYROLL & OWNERS (Moved Down) ---
+elif st.session_state.step == 9:
+    if st.button("← Previous step"):
+        prev_step()
+
+    st.markdown("# Payroll & Ownership")
+    
+    # PAYROLL SECTION
+    st.markdown("### Estimated Annual Payroll")
+    code = st.session_state.data.get('class_code', 'Selected Class')
+    st.text_input(f"Annual Payroll for {code}", value="$150,000")
+
+    st.markdown("---")
+
+    # OWNER/OFFICER SECTION
+    st.markdown("### Owner / Officer Information")
+    st.write("Please list all owners/officers and indicate coverage status.")
+    
+    col_a, col_b, col_c = st.columns([2, 2, 1])
+    with col_a:
+        st.text_input("Owner Name", "Jane Doe")
+    with col_b:
+        st.text_input("Title", "President")
+    with col_c:
+        st.number_input("Ownership %", 50, 100, 100)
+    
+    st.radio("Coverage Status", ["Include", "Exclude"], horizontal=True)
+
+    st.write("")
+    if st.button("Next"):
         next_step()
 
 # --- PAGE 10: PROCESSING SCREEN ---
@@ -659,7 +643,6 @@ elif st.session_state.step == 12:
     with summary_col1:
         st.markdown("**Insured:**")
         st.write(st.session_state.data.get('company'))
-        # Using updated default address
         st.write("775 Battery Avenue Southeast")
         st.write("Sacramento, CA 95814")
         
