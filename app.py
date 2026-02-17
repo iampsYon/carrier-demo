@@ -179,21 +179,24 @@ with st.sidebar:
         4: "Eligibility", 
         5: "Operations",
         6: "Industry",
-        7: "Basic info", 
-        8: "Details", 
-        9: "Quote", 
+        7: "Payroll & Owners",  # NEW STEP
+        8: "Basic info", 
+        9: "Details", 
         10: "Quote", 
-        11: "Bound", 
-        12: "Decline"
+        11: "Quote", 
+        12: "Bound", 
+        13: "Decline"
     }
     
-    max_range = 12 if st.session_state.step < 12 else 6
+    # Adjusted max range for new step count (13)
+    max_range = 13 if st.session_state.step < 13 else 6
 
     for i in range(2, max_range):
         display_label = steps.get(i, '')
-        if i == 9 and st.session_state.step == 10: 
+        # Skip duplicate Quote label logic
+        if i == 10 and st.session_state.step == 11: 
             continue 
-        if i == 10 and st.session_state.step == 9:
+        if i == 11 and st.session_state.step == 10:
             continue
             
         if st.session_state.step == i:
@@ -273,16 +276,16 @@ elif st.session_state.step == 2:
 
         if zip_kickout:
             st.session_state.decline_reason = f"Location (Zip {zip_input}) is within a restricted moratorium zone (LA County)."
-            st.session_state.step = 12 # Jump to Decline
+            st.session_state.step = 13 # Jump to Decline (Updated Step)
             st.rerun()
         elif class_kickout:
             st.session_state.decline_reason = "Class Code 5551 (Roofing) is outside of our current appetite."
-            st.session_state.step = 12 # Jump to Decline
+            st.session_state.step = 13 # Jump to Decline (Updated Step)
             st.rerun()
         else:
             next_step()
 
-# --- PAGE 3: GUIDELINES (UPDATED) ---
+# --- PAGE 3: GUIDELINES ---
 elif st.session_state.step == 3:
     if st.button("← Previous step"):
         prev_step()
@@ -339,11 +342,11 @@ elif st.session_state.step == 4:
         # KICKOUT LOGIC
         if q_24hr == "Yes":
             st.session_state.decline_reason = "24-hour operations are outside of program appetite."
-            st.session_state.step = 12
+            st.session_state.step = 13 # Updated Step
             st.rerun()
         elif q_benchmark == "Yes":
             st.session_state.decline_reason = "Applicant already has active coverage with Benchmark (Duplicate Submission)."
-            st.session_state.step = 12
+            st.session_state.step = 13 # Updated Step
             st.rerun()
         else:
             next_step()
@@ -382,7 +385,7 @@ elif st.session_state.step == 5:
     if st.button("Next"):
         if kickout:
             st.session_state.decline_reason = "Selected operations (Chimneys/High Voltage) are prohibited for this class code."
-            st.session_state.step = 12
+            st.session_state.step = 13 # Updated Step
             st.rerun()
         else:
             next_step()
@@ -411,8 +414,8 @@ elif st.session_state.step == 6:
         
         c_q1 = st.radio("Does the applicant perform any work on rooftops?", ["No", "Yes"])
         st.write("")
-        c_q2 = st.number_input("Percentage of labor performed by uninsured subcontractors (%)", 0, 100, 0)
-        st.write("")
+        # --- REMOVED SUBCONTRACTOR QUESTION HERE ---
+        
         c_q3 = st.radio("Does any work take place at heights exceeding 40 feet?", ["No", "Yes"])
         st.write("")
         c_q4 = st.radio("Does any work take place at depths exceeding 15 feet?", ["No", "Yes"])
@@ -427,9 +430,8 @@ elif st.session_state.step == 6:
         st.write("")
         c_q9 = st.radio("Installation/repair of solar panels on elevated surfaces?", ["No", "Yes"])
 
-        # Kickout Logic
+        # Kickout Logic (Removed sub logic)
         if c_q1 == "Yes": reason = "Rooftop work is prohibited."
-        elif c_q2 > 25: reason = f"Uninsured subcontractor usage ({c_q2}%) exceeds maximum of 25%."
         elif c_q3 == "Yes": reason = "Work at heights > 40ft is prohibited."
         elif c_q4 == "Yes": reason = "Work at depths > 15ft is prohibited."
         elif c_q5 == "No": reason = "Fall protection required for heights > 10ft."
@@ -453,13 +455,45 @@ elif st.session_state.step == 6:
     if st.button("Next"):
         if reason:
             st.session_state.decline_reason = reason
-            st.session_state.step = 12
+            st.session_state.step = 13 # Updated Step
             st.rerun()
         else:
             next_step()
 
-# --- PAGE 7: BASIC INFO PART A ---
+# --- NEW PAGE 7: PAYROLL & OWNERS ---
 elif st.session_state.step == 7:
+    if st.button("← Previous step"):
+        prev_step()
+
+    st.markdown("# Payroll & Ownership")
+    
+    # PAYROLL SECTION
+    st.markdown("### Estimated Annual Payroll")
+    code = st.session_state.data.get('class_code', 'Florist')
+    st.text_input(f"Annual Payroll for {code}", value="$150,000")
+
+    st.markdown("---")
+
+    # OWNER/OFFICER SECTION
+    st.markdown("### Owner / Officer Information")
+    st.write("Please list all owners/officers and indicate coverage status.")
+    
+    col_a, col_b, col_c = st.columns([2, 2, 1])
+    with col_a:
+        st.text_input("Owner Name", "Jane Doe")
+    with col_b:
+        st.text_input("Title", "President")
+    with col_c:
+        st.number_input("Ownership %", 50, 100, 100)
+    
+    st.radio("Coverage Status", ["Include", "Exclude"], horizontal=True)
+
+    st.write("")
+    if st.button("Next"):
+        next_step()
+
+# --- PAGE 8: BASIC INFO PART A (Old Step 7) ---
+elif st.session_state.step == 8:
     if st.button("← Previous step"):
         prev_step()
 
@@ -475,8 +509,8 @@ elif st.session_state.step == 7:
     if st.button("Next"):
         next_step()
 
-# --- PAGE 8: BASIC INFO PART B ---
-elif st.session_state.step == 8:
+# --- PAGE 9: BASIC INFO PART B (Old Step 8) ---
+elif st.session_state.step == 9:
     if st.button("← Previous step"):
         prev_step()
 
@@ -512,8 +546,8 @@ elif st.session_state.step == 8:
     if st.button("Get Quote"):
         next_step()
 
-# --- PAGE 9: PROCESSING SCREEN ---
-elif st.session_state.step == 9:
+# --- PAGE 10: PROCESSING SCREEN (Old Step 9) ---
+elif st.session_state.step == 10:
     
     if 'validation_started' not in st.session_state:
         st.markdown("# Validating Data...")
@@ -539,11 +573,11 @@ elif st.session_state.step == 9:
         my_bar.progress((i + 1) * 20)
         
     del st.session_state.validation_started
-    st.session_state.step = 10
+    st.session_state.step = 11
     st.rerun()
 
-# --- PAGE 10: RESULT SCREEN ---
-elif st.session_state.step == 10:
+# --- PAGE 11: RESULT SCREEN (Old Step 10) ---
+elif st.session_state.step == 11:
     st.markdown("## Quote Generated")
     st.markdown("---")
     
@@ -584,8 +618,8 @@ elif st.session_state.step == 10:
         if st.button("BIND POLICY NOW"):
             next_step()
 
-# --- PAGE 11: BOUND SUMMARY ---
-elif st.session_state.step == 11:
+# --- PAGE 12: BOUND SUMMARY (Old Step 11) ---
+elif st.session_state.step == 12:
     st.balloons() 
     
     st.markdown("""
@@ -628,8 +662,8 @@ elif st.session_state.step == 11:
     b2.button("📧 Email to Insured")
     b3.button("Start New Quote", on_click=reset)
 
-# --- PAGE 12: DECLINE SCREEN ---
-elif st.session_state.step == 12:
+# --- PAGE 13: DECLINE SCREEN (Old Step 12) ---
+elif st.session_state.step == 13:
     st.markdown("## Application Declined")
     st.markdown("---")
     
