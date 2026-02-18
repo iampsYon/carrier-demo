@@ -165,7 +165,9 @@ def reset():
 
 # --- SIDEBAR ---
 with st.sidebar:
-    st.image("https://via.placeholder.com/50x50.png?text=WC", width=50) 
+    # Replace 'logo.png' with your actual file name
+    # Adjust width (e.g., 150, 200) to fit your specific logo's aspect ratio
+    st.image("EverPeakTM_blue.png", width=180)
     st.markdown("### New quote")
     st.caption("EP Business Company")
     
